@@ -1,0 +1,41 @@
+name: publish
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: npm 11.5.1+ (trusted publishing)
+        run: npm install -g npm@latest
+
+      - name: Tag 必须等于 package.json 的 version
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          version="$(node -p "require('./package.json').version")"
+          if [ "$tag" != "$version" ]; then
+            echo "tag $tag != package.json $version" >&2
+            exit 1
+          fi
+
+      - name: 两个入口的语法自检
+        run: |
+          node --check src/index.js
+          node --check src/client.js
+
+      - name: Publish with provenance
+        run: npm publish --provenance --access public

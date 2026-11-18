@@ -180,8 +180,8 @@ window.__ModuleLoader__.load({
     /** A dark wallpaper needs almost no veil to stay readable, a bright one needs
      *  a lot: derive the default from the picture's own mean luma. */
     function autoVeil(luma) {
-      if (!Number.isFinite(luma)) return 30
-      return Math.min(70, Math.max(6, Math.round((luma / 255) * 55 + 6)))
+      if (!Number.isFinite(luma)) return 42
+      return Math.min(78, Math.max(14, Math.round((luma / 255) * 70 + 12)))
     }
 
     function effectiveVeil(settings, luma) {
@@ -669,6 +669,9 @@ window.__ModuleLoader__.load({
           const response = await fetch(STATE_URL, { signal: AbortSignal.timeout(10_000) })
           const state = await response.json()
           if (state?.appearance?.enabled !== true) return
+          // Keep the live dials in sync with what is stored: a change made from
+          // another session (or the API) lands within one tick, no reload.
+          applyVars(state?.appearance?.settings, state?.wallpapers?.[activeTheme()]?.luma)
           const stamp = Number(state?.styleStamp) || 0
           if (stamp !== lastStamp) {
             lastStamp = stamp

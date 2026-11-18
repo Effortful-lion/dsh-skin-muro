@@ -395,6 +395,15 @@ export function apply(ctx) {
       await unlink(path.join(assets, file)).catch(() => {})
     }
 
+    const luma = Number.isFinite(entry.luma) ? entry.luma : await measureLuma(source)
+    if (luma !== null) {
+      const indexNow = await readIndex()
+      if (indexNow[entry.id] !== undefined) {
+        indexNow[entry.id] = { ...indexNow[entry.id], luma }
+        await writeIndex(indexNow)
+      }
+    }
+
     const creditsPath = path.join(assets, 'credits.json')
     const credits = await readJson(creditsPath, {})
     credits[theme] = {
@@ -404,7 +413,7 @@ export function apply(ctx) {
       sourceSize: `${entry.width}x${entry.height}`,
       frozenAt: entry.frozenAt,
       file: fileName,
-      luma: entry.luma ?? null,
+      luma,
       pickedBy: 'dsh-plugin-muro',
     }
     await writeFile(creditsPath, JSON.stringify(credits, null, 2) + '\n')

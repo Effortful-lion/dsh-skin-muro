@@ -1,6 +1,6 @@
 {
   "name": "dsh-skin-muro",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Muro 影幕：把 Muro 的 4K 壁纸变成 DSH 皮肤，自带一个可换壁纸的设置分区",
   "type": "module",
   "main": "src/index.js",

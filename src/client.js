@@ -146,18 +146,40 @@ window.__ModuleLoader__.load({
       document.documentElement.setAttribute('data-muro-theme', readTheme())
     }
 
+    /** One theme signal handler: flip the attribute and re-tune the dials for the
+     *  wallpaper that theme is about to show. Runs on the next frame so a burst of
+     *  React attribute writes costs one swap. */
     function watchTheme() {
+      let frame = 0
+      const onSignal = () => {
+        if (frame !== 0) return
+        frame = requestAnimationFrame(() => {
+          frame = 0
+          syncThemeAttribute()
+          applyVars(lastState?.appearance?.settings, lastState?.wallpapers?.[activeTheme()]?.luma)
+        })
+      }
       syncThemeAttribute()
+
       if (typeof window.matchMedia === 'function') {
         const query = window.matchMedia('(prefers-color-scheme: dark)')
-        if (typeof query.addEventListener === 'function') query.addEventListener('change', syncThemeAttribute)
+        if (typeof query.addEventListener === 'function') query.addEventListener('change', onSignal)
+        else if (typeof query.addListener === 'function') query.addListener(onSignal)
       }
-      const observer = new MutationObserver(syncThemeAttribute)
-      observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-ds-dark-theme', 'class'] })
+
+      // No attribute filter: this build has moved the dark marker between html,
+      // body and a wrapper more than once, and any of them may flip it.
+      const observer = new MutationObserver(onSignal)
+      observer.observe(document.documentElement, { attributes: true })
       if (document.body !== null) {
-        observer.observe(document.body, { attributes: true, attributeFilter: ['data-ds-dark-theme', 'class'] })
+        observer.observe(document.body, { attributes: true })
+        const first = document.body.firstElementChild
+        if (first !== null) observer.observe(first, { attributes: true })
       }
-      return () => observer.disconnect()
+      return () => {
+        observer.disconnect()
+        if (frame !== 0) cancelAnimationFrame(frame)
+      }
     }
 
     function unpaintSkin() {
@@ -676,17 +698,20 @@ window.__ModuleLoader__.load({
     }
 
     let lastStamp = 0
+    let lastState = null
 
     function watchStyle() {
       const timer = setInterval(async () => {
         try {
           const response = await fetch(STATE_URL, { signal: AbortSignal.timeout(10_000) })
           const state = await response.json()
-          if (state?.appearance?.enabled !== true) return
+          if (state === null || state === undefined) return
+          lastState = state
+          if (state.appearance?.enabled !== true) return
           // Follow the shell's light/dark switch, then keep the live dials in sync
           // with what is stored: a change made elsewhere lands within one tick.
           syncThemeAttribute()
-          applyVars(state?.appearance?.settings, state?.wallpapers?.[activeTheme()]?.luma)
+          applyVars(state.appearance?.settings, state.wallpapers?.[activeTheme()]?.luma)
           const stamp = Number(state?.styleStamp) || 0
           if (stamp !== lastStamp) {
             lastStamp = stamp
@@ -695,7 +720,7 @@ window.__ModuleLoader__.load({
         } catch {
           // Offline or the host is restarting: the next tick retries.
         }
-      }, 4_000)
+      }, 1_200)
       return () => clearInterval(timer)
     }
 

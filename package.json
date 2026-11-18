@@ -46,12 +46,19 @@
     "src",
     "skin",
     "tools",
+    "docs",
     "cordis.patch.yml",
     "README.md",
+    "README.en.md",
     "LICENSE"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/<you>/dsh-skin-muro.git"
-  }
+    "url": "git+https://github.com/Effortful-lion/dsh-skin-muro.git"
+  },
+  "homepage": "https://github.com/Effortful-lion/dsh-skin-muro#readme",
+  "bugs": {
+    "url": "https://github.com/Effortful-lion/dsh-skin-muro/issues"
+  },
+  "author": "Effortful-lion"
 }

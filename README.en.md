@@ -53,7 +53,7 @@ Settings is read-only** (by design).
 
 ### 3. From npm (published — the easiest way)
 
-`dsh-skin-muro@1.0.0` is on npm: install by package name from the plugin panel, or from the command line:
+`dsh-skin-muro` is on npm: install by package name from the plugin panel, or from the command line:
 
 ```sh
 cd ~/.dsh/profiles/desktop

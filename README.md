@@ -52,7 +52,7 @@ link:/绝对路径/dsh-skin-muro
 
 ### 方式三：从 npm 装（已发布，最省事）
 
-`dsh-skin-muro@1.0.0` 已在 npm 上，插件面板直接填包名即可；或用命令行：
+`dsh-skin-muro` 已在 npm 上，插件面板直接填包名即可；或用命令行：
 
 ```sh
 cd ~/.dsh/profiles/desktop

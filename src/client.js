@@ -117,33 +117,44 @@ window.__ModuleLoader__.load({
 
     /** The shell marks dark mode on html or body depending on version; decide
      *  once here and let our own attribute drive the CSS. */
-    function readTheme() {
+    /** The shell's own light/dark marker, or null when this build exposes none. */
+    function shellTheme() {
       const root = document.documentElement
       const body = document.body
-      // 1) the shell's own markers, wherever this build puts them
       if (root.hasAttribute('data-ds-dark-theme') || body?.hasAttribute('data-ds-dark-theme') === true) return 'dark'
       const declared = root.getAttribute('data-theme') ?? body?.getAttribute('data-theme') ?? ''
-      if (declared === 'dark') return 'dark'
-      if (declared === 'light') return 'light'
+      if (declared === 'dark' || declared === 'light') return declared
       const classes = `${root.className} ${body?.className ?? ''}`
-      if (/\bdark\b/.test(classes) && !/\blight\b/.test(classes)) return 'dark'
-      // 2) "follow the system" is the common case, and this is exactly that signal
-      if (typeof window.matchMedia === 'function' && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark'
-      // 3) last resort: the ink the shell is actually painting with
-      try {
-        const ink = getComputedStyle(body).color.match(/rgba?\(([^)]+)\)/)
-        if (ink !== null) {
-          const [r, g, b] = ink[1].split(',').map(Number)
-          return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255 > 0.5 ? 'dark' : 'light'
-        }
-      } catch {
-        // ignore and fall through
-      }
-      return 'light'
+      const dark = /\bdark\b/.test(classes)
+      const light = /\blight\b/.test(classes)
+      if (dark && !light) return 'dark'
+      if (light && !dark) return 'light'
+      return null
     }
 
+    function systemTheme() {
+      if (typeof window.matchMedia !== 'function') return 'light'
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    }
+
+    function activeTheme() {
+      return shellTheme() ?? systemTheme()
+    }
+
+    /** Same theme as the system? Then leave the attribute off and let the CSS
+     *  media query do the swap — that path needs no JavaScript, so it is instant
+     *  in both directions. Only a shell that disagrees with the system (an
+     *  explicit light/dark setting) pins the attribute. */
     function syncThemeAttribute() {
-      document.documentElement.setAttribute('data-muro-theme', readTheme())
+      const root = document.documentElement
+      const shell = shellTheme()
+      const wanted = shell === null || shell === systemTheme() ? null : shell
+      const current = root.getAttribute('data-muro-theme')
+      if (wanted === null) {
+        if (current !== null) root.removeAttribute('data-muro-theme')
+        return
+      }
+      if (current !== wanted) root.setAttribute('data-muro-theme', wanted)
     }
 
     /** One theme signal handler: flip the attribute and re-tune the dials for the
@@ -206,13 +217,6 @@ window.__ModuleLoader__.load({
       { id: 'standard', label: '标准', settings: { veil: 42, blur: 0, brightness: 100, saturate: 105, contrast: 100, grayscale: 0, panel: 46 } },
       { id: 'strong', label: '强反差', settings: { veil: 62, blur: 5, brightness: 92, saturate: 100, contrast: 102, grayscale: 0, panel: 62 } },
     ]
-
-    /** Paint the live values as custom properties: the stylesheet reads them, so
-     *  a slider move costs no request and no repaint of the stylesheet. */
-    function activeTheme() {
-      return document.documentElement.getAttribute('data-muro-theme') === 'light' ? 'light' : 'dark'
-    }
-
     /** A dark wallpaper needs almost no veil to stay readable, a bright one needs
      *  a lot: derive the default from the picture's own mean luma. */
     function autoVeil(luma) {

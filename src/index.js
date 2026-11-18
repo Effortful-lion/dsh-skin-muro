@@ -677,13 +677,22 @@ html[data-muro-skin] body::before{content:"";position:fixed;inset:0;z-index:-2;p
   background-image:${url(forLight)};background-position:var(--muro-pos);background-size:cover;background-repeat:no-repeat;
   filter:brightness(var(--muro-bright)) saturate(var(--muro-sat)) contrast(var(--muro-contrast)) grayscale(var(--muro-gray)) blur(var(--muro-blur));
   transform:scale(var(--muro-scale));transform-origin:center;}
-html[data-muro-skin][data-muro-theme="dark"] body::before{background-image:${url(forDark)};}
-html[data-muro-skin],html[data-muro-skin] body{background-color:transparent!important;}
 html[data-muro-skin] body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
   background:linear-gradient(180deg,rgba(250,252,255,calc(var(--muro-veil) * 1.1)),rgba(247,250,255,var(--muro-veil)) 45%,rgba(240,245,252,calc(var(--muro-veil) * 1.15)));}
+/* The system preference drives the swap with no JavaScript in the path, which
+   is what makes dark -> light as instant as light -> dark. */
+@media (prefers-color-scheme: dark){
+  html[data-muro-skin] body::before{background-image:${url(forDark)};}
+  html[data-muro-skin] body::after{background:linear-gradient(180deg,rgba(4,6,12,calc(var(--muro-veil) * 1.1)),rgba(4,6,12,var(--muro-veil)) 45%,rgba(4,6,12,calc(var(--muro-veil) * 1.2)));}
+}
+/* An explicit shell theme beats the system preference: the page only sets this
+   attribute when the shell disagrees with the system. */
+html[data-muro-skin][data-muro-theme="light"] body::before{background-image:${url(forLight)};}
+html[data-muro-skin][data-muro-theme="light"] body::after{background:linear-gradient(180deg,rgba(250,252,255,calc(var(--muro-veil) * 1.1)),rgba(247,250,255,var(--muro-veil)) 45%,rgba(240,245,252,calc(var(--muro-veil) * 1.15)));}
+html[data-muro-skin][data-muro-theme="dark"] body::before{background-image:${url(forDark)};}
 html[data-muro-skin][data-muro-theme="dark"] body::after{background:linear-gradient(180deg,rgba(4,6,12,calc(var(--muro-veil) * 1.1)),rgba(4,6,12,var(--muro-veil)) 45%,rgba(4,6,12,calc(var(--muro-veil) * 1.2)));}
-`
-  }
+html[data-muro-skin],html[data-muro-skin] body{background-color:transparent!important;}
+`  }
 
   const skinCssRoute = {
     kind: 'exact',

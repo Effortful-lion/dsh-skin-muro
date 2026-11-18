@@ -1,5 +1,5 @@
 /**
- * Browser half of dsh-plugin-muro: the "Muro 影幕" settings section.
+ * Browser half of dsh-skin-muro: the "Muro 影幕" settings section.
  *
  * The catalog loads on its own. Selecting a card only selects it; the single
  * 下载资源 button fetches the 4K master once, freezes one frame into the local
@@ -8,14 +8,14 @@
  * copies followed by an apply + reload.
  */
 window.__ModuleLoader__.load({
-  id: 'dsh-plugin-muro',
+  id: 'dsh-skin-muro',
   factory: (require) => {
     const module = { exports: {} }
     const React = require('react')
     const h = React.createElement
 
     const inject = ['slots']
-    const STYLE_ID = 'dsh-plugin-muro/style'
+    const STYLE_ID = 'dsh-skin-muro/style'
     const STATE_URL = '/muro/state'
     const CATALOG_URL = '/muro/catalog'
     const DOWNLOAD_URL = '/muro/download'
@@ -23,7 +23,7 @@ window.__ModuleLoader__.load({
     const JOB_URL = '/muro/job'
     const APPEARANCE_URL = '/muro/appearance'
     const SKIN_CSS_URL = '/muro/skin.css'
-    const SKIN_LINK_ID = 'dsh-plugin-muro/skin'
+    const SKIN_LINK_ID = 'dsh-skin-muro/skin'
 
     const CSS = [
       '.muro{--muro-line:var(--dsw-alias-border-l1);display:flex;flex-direction:column;gap:16px;padding:2px 2px 28px;font-variant-numeric:tabular-nums}',

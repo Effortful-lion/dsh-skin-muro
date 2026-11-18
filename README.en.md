@@ -51,13 +51,22 @@ link:/absolute/path/to/dsh-skin-muro
 Otherwise use option 1. Once installed, the **sidebar plugin page** can enable/disable it; the **plugin list in
 Settings is read-only** (by design).
 
-### 3. Publish it first
+### 3. From npm (published — the easiest way)
+
+`dsh-skin-muro@1.0.0` is on npm: install by package name from the plugin panel, or from the command line:
 
 ```sh
-npm publish --access public   # package.json name is already dsh-skin-muro
+cd ~/.dsh/profiles/desktop
+pnpm add dsh-skin-muro
 ```
 
-After that, install by name `dsh-skin-muro` from the panel, or `dsh plugin --profile desktop add dsh-skin-muro`.
+Then add `"dsh-skin-muro"` to `dsh.profile.bundles`.
+
+Releasing (maintainers):
+
+```sh
+npm version patch && git push --follow-tags   # the tag triggers GitHub Actions, published with provenance
+```
 
 ### Skin only (no plugin)
 

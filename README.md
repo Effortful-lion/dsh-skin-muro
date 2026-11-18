@@ -50,13 +50,22 @@ link:/绝对路径/dsh-skin-muro
 
 不接受就回到方式一。装好之后：**侧边栏插件页**能启停它、看它占用哪一行；**设置页里的插件列表是只读的**（官方设计如此）。
 
-### 方式三：先发布成 npm 包
+### 方式三：从 npm 装（已发布，最省事）
+
+`dsh-skin-muro@1.0.0` 已在 npm 上，插件面板直接填包名即可；或用命令行：
 
 ```sh
-npm publish --access public   # package.json 的 name 已经是 dsh-skin-muro
+cd ~/.dsh/profiles/desktop
+pnpm add dsh-skin-muro
 ```
 
-之后在插件面板直接填包名 `dsh-skin-muro`，或 `dsh plugin --profile desktop add dsh-skin-muro`。
+再把 `"dsh-skin-muro"` 加进 `dsh.profile.bundles`。
+
+发新版（维护者）：
+
+```sh
+npm version patch && git push --follow-tags   # tag 触发 GitHub Actions，带 provenance 发布
+```
 
 ### 只要皮肤（不装插件）
 

@@ -1,0 +1,10 @@
+# Muro 影幕 — a settings section of its own, plus the wallpaper library it
+# writes into $DSH_HOME/skins/muro.
+#
+# The skin itself stays a pure asset directory; this plugin only owns the page
+# and the assets it refreshes. Add it with:
+#   dsh plugin --profile desktop add link:$(pwd)/plugins/dsh-plugin-muro
+
+- insert:
+    - id: muro
+      name: 'dsh-skin-muro'

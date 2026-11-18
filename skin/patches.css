@@ -1,0 +1,51 @@
+/* Muro Cinematic — L3 patches.
+ *
+ * Only what tokens cannot reach: the shell frame that paints an opaque fill
+ * above the decoration layers, the selection paint, scrollbar slimming, and
+ * a hairline specular on the composer. No layout is moved here.
+ */
+
+[id="root"] {
+  background: none;
+}
+
+[class*="_frame"] {
+  background: transparent !important;
+}
+
+::selection {
+  background: rgb(169 196 255 / 0.42);
+  color: rgb(11 18 32);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 8px;
+  background-clip: content-box;
+}
+
+/* Muro's glass carries a single specular edge on its top rim; the composer
+   is the one card that gets it. */
+[data-slot="conversation.composer"] {
+  border-radius: var(--dsw-radius-panel);
+  box-shadow: 0 0 0 1px rgb(169 196 255 / 0.14), 0 18px 40px rgb(4 8 16 / 0.22);
+}
+
+[data-slot="conversation.composer"]:focus-within {
+  box-shadow: 0 0 0 1px rgb(169 196 255 / 0.38), 0 18px 48px rgb(4 8 16 / 0.26);
+}
+/* The middle column paints its own opaque surface (its token is not one the
+   skin can reach), so the wallpaper stops at the sidebar without this. The
+   anchor is the CSS-module suffix the semantic contract documents for
+   dsh 0.1.7+ ; the data-slot forms cover the older shell. */
+[class*="centerCol"],
+[data-slot="conversation"],
+[data-slot="main.conversation"],
+[data-rightbar-col] {
+  background: transparent !important;
+}

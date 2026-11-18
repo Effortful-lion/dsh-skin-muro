@@ -1,0 +1,57 @@
+{
+  "name": "dsh-skin-muro",
+  "version": "1.0.0",
+  "description": "Muro 影幕：把 Muro 的 4K 壁纸变成 DSH 皮肤，自带一个可换壁纸的设置分区",
+  "type": "module",
+  "main": "src/index.js",
+  "license": "MIT",
+  "private": false,
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "dsh-skin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "skin",
+    "wallpaper",
+    "muro",
+    "macos"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "os": [
+    "darwin"
+  ],
+  "dsh": {
+    "manifestVersion": 1,
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-slots",
+        "@deepseek-ai/dsh-client-locale"
+      ],
+      "platform": "web"
+    }
+  },
+  "exports": {
+    ".": "./src/index.js",
+    "./client": "./src/client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src",
+    "skin",
+    "tools",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/<you>/dsh-skin-muro.git"
+  }
+}

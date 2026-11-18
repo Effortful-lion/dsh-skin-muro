@@ -1,0 +1,12 @@
+{
+  "dark": {
+    "title": "Aurora Ridge (generated)",
+    "category": "Original",
+    "note": "由 tools/make-default-backdrops.py 生成，仓库不含第三方素材"
+  },
+  "light": {
+    "title": "Glacier Daylight (generated)",
+    "category": "Original",
+    "note": "由 tools/make-default-backdrops.py 生成，仓库不含第三方素材"
+  }
+}

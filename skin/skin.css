@@ -1,0 +1,242 @@
+/* Muro Cinematic (muro) — L1 tokens + L2 semantic surfaces.
+ *
+ * Primitives live on :root (light) and are re-declared on
+ * body[data-ds-dark-theme]; the token map below is written once and
+ * resolves var() per element, so both themes share one derivation.
+ * "--dsw-skin-scrim" is owned by the skin-center: at 0 the panels are
+ * opaque, as art becomes visible the same panels open up.
+ */
+
+:root {
+  --muro-bg-base: 238 242 249;
+  --muro-bg-1: 246 249 254;
+  --muro-bg-2: 233 239 248;
+  --muro-bg-3: 222 230 242;
+  --muro-bg-4: 210 221 237;
+  --muro-ink: 12 20 36;
+  --muro-ink-2: 42 58 85;
+  --muro-ink-3: 92 109 136;
+  --muro-ink-4: 128 143 166;
+  --muro-on-invert: 255 255 255;
+  --muro-brand: 169 196 255;
+  --muro-on-brand: 11 18 32;
+  --muro-brand-hover: 194 213 255;
+  --muro-brand-strong: 47 88 186;
+  --muro-success: 30 138 82;
+  --muro-success-2: 88 176 88;
+  --muro-success-3: 220 239 226;
+  --muro-warn: 176 124 33;
+  --muro-warn-2: 217 169 79;
+  --muro-warn-3: 247 236 216;
+  --muro-error: 200 47 60;
+  --muro-error-2: 224 92 92;
+
+  color: rgb(var(--muro-ink));
+  background-color: rgb(var(--muro-bg-base));
+  --dsw-radius-xs: 4px;
+  --dsw-radius-sm: 6px;
+  --dsw-radius-md: 10px;
+  --dsw-radius-lg: 14px;
+  --dsw-radius-xl: 18px;
+  --dsw-radius-panel: 20px;
+}
+
+body[data-ds-dark-theme] {
+  --muro-bg-base: 6 9 16;
+  --muro-bg-1: 10 14 21;
+  --muro-bg-2: 14 19 28;
+  --muro-bg-3: 19 26 37;
+  --muro-bg-4: 25 33 46;
+  --muro-ink: 233 238 248;
+  --muro-ink-2: 186 197 217;
+  --muro-ink-3: 137 149 171;
+  --muro-ink-4: 104 116 137;
+  --muro-on-invert: 11 18 32;
+  --muro-brand-strong: 169 196 255;
+  --muro-success: 79 208 138;
+  --muro-success-2: 58 175 112;
+  --muro-success-3: 22 44 34;
+  --muro-warn: 229 181 103;
+  --muro-warn-2: 201 151 72;
+  --muro-warn-3: 46 36 20;
+  --muro-error: 255 122 122;
+  --muro-error-2: 214 88 88;
+
+  color: rgb(var(--muro-ink));
+  background-color: rgb(var(--muro-bg-base));
+}
+
+/* ---- surfaces ------------------------------------------------------- */
+:root,
+body[data-ds-dark-theme] {
+  /* The canvas, not a panel: at occlusion 0 it must be fully transparent or
+     the wallpaper underneath can never be seen. Same idiom as the shipped
+     skin (rgba(..., calc(scrim * k))). */
+  --dsw-alias-bg-base: rgb(var(--muro-bg-base) / calc(var(--dsw-skin-scrim, 0) * .55));
+  --dsw-alias-bg-layer-1: rgb(var(--muro-bg-1) / calc(1 - var(--dsw-skin-scrim, 0) * .58));
+  --dsw-alias-bg-layer-2: rgb(var(--muro-bg-2) / calc(1 - var(--dsw-skin-scrim, 0) * .55));
+  --dsw-alias-bg-layer-3: rgb(var(--muro-bg-3) / calc(1 - var(--dsw-skin-scrim, 0) * .5));
+  --dsw-alias-bg-layer-4: rgb(var(--muro-bg-4) / calc(1 - var(--dsw-skin-scrim, 0) * .5));
+  --dsw-alias-bg-document-preview: rgb(var(--muro-bg-2));
+  --dsw-alias-bg-document-selection: rgb(var(--muro-brand-strong) / .14);
+  --dsw-alias-bg-mask-1: rgb(var(--muro-ink) / .42);
+  --dsw-alias-bg-mask-2: rgb(var(--muro-ink) / .22);
+  --dsw-alias-bg-mask-3: rgb(var(--muro-ink) / .52);
+  --dsw-alias-bg-mask-drop: rgb(var(--muro-ink) / .58);
+  --dsw-alias-bg-mask-photo: rgb(var(--muro-ink) / .86);
+  --dsw-alias-bg-module-platform: rgb(var(--muro-bg-2) / calc(1 - var(--dsw-skin-scrim, 0) * .55));
+  --dsw-alias-bg-multi-select: rgb(var(--muro-brand) / .72);
+  --dsw-alias-bg-overlay: rgb(var(--muro-bg-1) / .92);
+  --dsw-alias-bg-skeleton: rgb(var(--muro-ink) / .07);
+
+  /* ---- strokes ------------------------------------------------------ */
+  --dsw-alias-border-inverted: rgb(var(--muro-on-invert) / .55);
+  --dsw-alias-border-inverted2: rgb(var(--muro-on-invert) / .38);
+  --dsw-alias-border-l1: rgb(var(--muro-ink) / .1);
+  --dsw-alias-border-l2: rgb(var(--muro-ink) / .15);
+  --dsw-alias-border-l2-darkmode-thin: rgb(var(--muro-ink) / .12);
+  --dsw-alias-border-l3: rgb(var(--muro-ink) / .22);
+  --dsw-alias-border-l4: rgb(var(--muro-ink) / .32);
+
+  /* ---- brand / action (self-contained primary set) ------------------ */
+  --dsw-alias-brand-primary: rgb(var(--muro-brand-strong));
+  --dsw-alias-brand-primary-invert: rgb(var(--muro-on-brand));
+  --dsw-alias-brand-primary-new-colorprimary-new-color: rgb(var(--muro-brand-strong));
+  --dsw-alias-brand-text: rgb(var(--muro-on-brand));
+  --dsw-alias-button-primary-fill: rgb(var(--muro-brand));
+  --dsw-alias-button-primary-hover: rgb(var(--muro-brand-hover));
+  --dsw-alias-button-primary-dimmed: rgb(var(--muro-brand) / .45);
+  --dsw-alias-label-primary-foreground: rgb(var(--muro-on-brand));
+  --dsw-alias-button-contrast-fill: rgb(var(--muro-brand-strong));
+  --dsw-alias-button-elevated-fill: rgb(var(--muro-bg-1));
+  --dsw-alias-button-floating-fill: rgb(var(--muro-bg-1));
+  --dsw-alias-button-floating-hover: rgb(var(--muro-bg-2));
+  --dsw-alias-button-ghost-active-border: rgb(var(--muro-brand-strong) / .42);
+  --dsw-alias-button-ghost-active-fill: rgb(var(--muro-brand-strong) / .14);
+  --dsw-alias-button-ghost-active-hover: rgb(var(--muro-brand-strong) / .2);
+  --dsw-alias-button-info-fill: rgb(var(--muro-brand-strong));
+  --dsw-alias-button-info-hover: rgb(var(--muro-brand-hover));
+  --dsw-alias-button-tool-bar-fill: rgb(var(--muro-brand-strong) / .5);
+  --dsw-alias-button-tool-bar-fill-invisible: rgb(var(--muro-brand-strong) / .36);
+  --dsw-alias-button-tool-bar-hover: rgb(var(--muro-brand-strong) / .62);
+
+  /* ---- interactive -------------------------------------------------- */
+  --dsw-alias-interactive-bg-hover: rgb(var(--muro-ink) / .06);
+  --dsw-alias-interactive-bg-active: rgb(var(--muro-brand-strong) / .14);
+  --dsw-alias-interactive-bg-hover-accent: rgb(var(--muro-brand-strong) / .18);
+  --dsw-alias-interactive-bg-hover-danger: rgb(var(--muro-error) / .12);
+  --dsw-alias-interactive-bg-hover-solid: rgb(var(--muro-bg-2));
+
+  /* ---- text --------------------------------------------------------- */
+  --dsw-alias-label-primary: rgb(var(--muro-ink));
+  --dsw-alias-label-secondary: rgb(var(--muro-ink-2));
+  --dsw-alias-label-tertiary: rgb(var(--muro-ink-3));
+  --dsw-alias-label-caption: rgb(var(--muro-ink-3));
+  --dsw-alias-label-dimmed: rgb(var(--muro-ink-4));
+  --dsw-alias-label-primary-dimmed: rgb(var(--muro-ink-2));
+  --dsw-alias-label-primary-inverted: rgb(var(--muro-on-invert));
+  --dsw-alias-label-primary-bluish: rgb(var(--muro-brand-strong));
+  --dsw-alias-label-error: rgb(var(--muro-error));
+  --dsw-alias-label-shimmer: rgb(var(--muro-ink-4) / .55);
+  --dsw-alias-label-deep-diving: rgb(var(--muro-brand-strong));
+  --dsw-alias-label-deep-diving-shimmer: rgb(var(--muro-brand-strong) / .55);
+  --dsw-alias-link: rgb(var(--muro-brand-strong));
+
+  /* ---- markdown / code ---------------------------------------------- */
+  --dsw-alias-markdown-citation: rgb(var(--muro-bg-2) / .6);
+  --dsw-alias-markdown-code-block: rgb(var(--muro-bg-1) / .6);
+  --dsw-alias-markdown-code-block-banner: rgb(var(--muro-bg-2) / .62);
+  --dsw-alias-markdown-code-segment-selected: rgb(var(--muro-bg-2) / .8);
+  --dsw-alias-markdown-code-segment-unselected: rgb(var(--muro-bg-1) / .55);
+  --dsw-alias-markdown-inline-code: rgb(var(--muro-bg-2) / .62);
+  --dsw-alias-markdown-placeholder: rgb(var(--muro-bg-1) / .55);
+  --dsw-alias-markdown-tag: rgb(var(--muro-bg-2) / .68);
+  --dsw-alias-code-diff-added: rgb(var(--muro-success) / .16);
+  --dsw-alias-code-diff-deleted: rgb(var(--muro-error) / .16);
+  --dsw-alias-file-diff-added-bg: rgb(var(--muro-success) / .1);
+  --dsw-alias-file-diff-added-gutter: rgb(var(--muro-success) / .18);
+  --dsw-alias-file-diff-added-marker: rgb(var(--muro-success) / .55);
+  --dsw-alias-file-diff-deleted-bg: rgb(var(--muro-error) / .1);
+  --dsw-alias-file-diff-deleted-gutter: rgb(var(--muro-error) / .18);
+  --dsw-alias-file-diff-deleted-marker: rgb(var(--muro-error) / .55);
+
+  /* ---- menus, cards, overlays --------------------------------------- */
+  --dsw-alias-menu-group-header-fill: rgb(var(--muro-bg-2) / .7);
+  --dsw-alias-menu-icon: rgb(var(--muro-ink-3));
+  --dsw-alias-settings-card-fill: rgb(var(--muro-bg-1) / .78);
+  --dsw-alias-settings-card-stroke: rgb(var(--muro-ink) / .12);
+  --dsw-alias-hovercard-bg: rgb(var(--muro-bg-1) / .96);
+  --dsw-alias-toast-bg: rgb(var(--muro-bg-4) / .96);
+  --dsw-alias-toast-label: rgb(var(--muro-ink));
+  --dsw-alias-tooltip-bg: rgb(var(--muro-bg-4) / .98);
+  --dsw-alias-tooltip-fg: rgb(var(--muro-ink));
+  --dsw-alias-tooltip-key-bg: rgb(var(--muro-ink) / .14);
+  --dsw-alias-turn-trigger-bg: rgb(var(--muro-bg-1) / .82);
+  --dsw-alias-turn-trigger-bg-hover: rgb(var(--muro-bg-2) / .92);
+  --dsw-alias-switch-thumb: rgb(var(--muro-bg-1));
+  --dsw-alias-scrollbar-bg-l1: rgb(var(--muro-ink) / .12);
+  --dsw-alias-scrollbar-bg-l2: rgb(var(--muro-ink) / .12);
+  --dsw-alias-scrollbar-hover-l1: rgb(var(--muro-ink) / .28);
+  --dsw-alias-scrollbar-hover-l2: rgb(var(--muro-ink) / .28);
+
+  /* ---- state -------------------------------------------------------- */
+  --dsw-alias-state-business-primary: rgb(var(--muro-brand-strong));
+  --dsw-alias-state-business-tertiary: rgb(var(--muro-brand) / .22);
+  --dsw-alias-state-done-primary: rgb(var(--muro-success));
+  --dsw-alias-state-error-primary: rgb(var(--muro-error));
+  --dsw-alias-state-error-secondary: rgb(var(--muro-error-2));
+  --dsw-alias-state-idle-primary: rgb(var(--muro-ink-4));
+  --dsw-alias-state-success-primary: rgb(var(--muro-success));
+  --dsw-alias-state-success-secondary: rgb(var(--muro-success-2));
+  --dsw-alias-state-success-tertiary: rgb(var(--muro-success-3));
+  --dsw-alias-state-warn-primary: rgb(var(--muro-warn));
+  --dsw-alias-state-warn-secondary: rgb(var(--muro-warn-2));
+  --dsw-alias-state-warn-tertiary: rgb(var(--muro-warn-3));
+  --dsw-alias-state-warn-label: rgb(var(--muro-warn));
+
+  /* ---- onboarding / illustration ------------------------------------ */
+  --dsw-alias-onboarding-accent: rgb(var(--muro-brand-strong));
+  --dsw-alias-onboarding-card-fill: rgb(var(--muro-bg-1) / .9);
+  --dsw-alias-onboarding-checkbox-border: rgb(var(--muro-brand-strong) / .5);
+  --dsw-alias-onboarding-secondary-fill: rgb(var(--muro-bg-2) / .9);
+  --dsw-gradient-onboarding-blue-stops: #a9c4ff, #5f86e0;
+  --dsw-gradient-onboarding-cyan-stops: #a9c4ff, #7fd8ff;
+  --dsw-gradient-onboarding-violet-stops: #c3b4ff, #a9c4ff;
+  --dsw-alias-illustration-background: rgb(var(--muro-bg-2));
+  --dsw-alias-illustration-backing: rgb(var(--muro-bg-3));
+  --dsw-alias-illustration-detail: rgb(var(--muro-brand) / .55);
+  --dsw-alias-illustration-inset: rgb(var(--muro-ink) / .08);
+  --dsw-alias-illustration-shadow: rgb(var(--muro-ink) / .18);
+  --dsw-alias-illustration-surface: rgb(var(--muro-bg-1));
+
+  /* ---- shell specifics ---------------------------------------------- */
+  --dsw-specific-bubble: rgb(var(--muro-bg-2) / .9);
+  --dsw-specific-bubble-highlight: rgb(var(--muro-brand) / .38);
+  --dsw-specific-input-major: rgb(var(--muro-bg-1) / calc(1 - var(--dsw-skin-scrim, 0) * .42));
+  --dsw-specific-login-input: rgb(var(--muro-bg-1) / calc(1 - var(--dsw-skin-scrim, 0) * .42));
+  --dsw-specific-menu: rgb(var(--muro-bg-1) / .94);
+  --dsw-specific-selector: rgb(var(--muro-bg-2) / .88);
+  --dsw-specific-sidebar-fill: rgb(var(--muro-bg-1) / calc(1 - var(--dsw-skin-scrim, 0) * .52));
+  --dsw-specific-sidebar-nav-item-active: rgb(var(--muro-brand-strong) / .16);
+  --dsw-specific-sidebar-nav-item-active-accent: rgb(var(--muro-brand-strong) / .46);
+  --dsw-specific-sidebar-nav-item-hover: rgb(var(--muro-ink) / .06);
+  --dsw-specific-tip: rgb(var(--muro-bg-2));
+  --dsw-menu-surface-fill: rgb(var(--muro-bg-1) / .95);
+  --dsw-menu-backdrop-filter: blur(18px) saturate(1.15);
+
+  /* ---- geometry, elevation, focus ----------------------------------- */
+  --dsw-focus-ring-color: rgb(var(--muro-brand-strong) / .55);
+  --dsw-focus-ring-width: 2px;
+  --dsw-elevation-stroke-color: rgb(var(--muro-ink) / .12);
+  --dsw-elevation-stroke: 1px solid rgb(var(--muro-ink) / .12);
+  --dsw-elevation-soft: 0 1px 2px rgb(var(--muro-ink) / .06);
+  --dsw-elevation-panel: 0 18px 48px rgb(var(--muro-ink) / .16);
+  --dsw-elevation-prominent: 0 28px 72px rgb(var(--muro-ink) / .26);
+  --dsw-shadow-lv1: 0 1px 2px rgb(var(--muro-ink) / .08);
+  --dsw-shadow-lv1-blur: 2px;
+  --dsw-shadow-lv2: 0 8px 24px rgb(var(--muro-ink) / .14);
+  --dsw-shadow-lv3: 0 18px 48px rgb(var(--muro-ink) / .2);
+  --dsw-mask-blur: 14px;
+  --dsw-linear-gradient-think: linear-gradient(90deg, rgb(var(--muro-brand) / .38), rgb(var(--muro-brand) / 0));
+  --dsw-linear-think-select: linear-gradient(90deg, rgb(var(--muro-brand-strong) / .22), rgb(var(--muro-brand-strong) / 0));
+}

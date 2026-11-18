@@ -1,0 +1,44 @@
+{
+  "$schema": "https://schemas.linxin666.org/dsh-skin/v2.json",
+  "skinManifestVersion": 2,
+  "id": "muro",
+  "name": "Muro 影幕",
+  "nameEn": "Muro Cinematic",
+  "version": "1.0.0",
+  "author": "lead · DeepSeek Harness",
+  "tagline": "Muro 壁纸 · 冰蓝 #A9C4FF · 液态玻璃面板",
+  "description": "把 Muro 的动态壁纸定格成 DSH 的底图：面板化为液态玻璃，冰蓝 #A9C4FF 是唯一强调色，暗场是主色，亮场是同一套语言的日光版。底图由 tools/pick-wallpaper.py 直接从 Muro 的壁纸库里取（4K 母带抽帧），可随时换一张。",
+  "tags": [
+    "muro",
+    "wallpaper",
+    "glass",
+    "cinematic",
+    "dark"
+  ],
+  "accent": "#A9C4FF",
+  "order": 90,
+  "license": "MIT（皮肤代码）· 壁纸来自 Muro 壁纸库，版权归各自作者",
+  "sourceUrl": "https://github.com/MrRockySL/Muro",
+  "noticeUrl": "https://github.com/MrRockySL/Muro/blob/main/NOTICE.md",
+  "attribution": "壁纸取自 Muro 壁纸库（MrRockySL 的 Muro 应用），版权归原视频作者；仅供本机自用，勿再分发",
+  "preview": {
+    "light": "preview/light.jpg",
+    "dark": "preview/dark.jpg"
+  },
+  "contributes": {
+    "stylesheet": "skin.css",
+    "patches": "patches.css",
+    "backgroundMedia": {
+      "light": {
+        "type": "image",
+        "src": "assets/backdrop-light.jpg",
+        "scrim": "linear-gradient(180deg, rgba(246, 249, 254, 0.10) 0%, rgba(238, 243, 251, 0.22) 55%, rgba(226, 233, 245, 0.30) 100%)"
+      },
+      "dark": {
+        "type": "image",
+        "src": "assets/backdrop-dark.jpg",
+        "scrim": "linear-gradient(180deg, rgba(4, 6, 12, 0.24) 0%, rgba(6, 9, 16, 0.38) 55%, rgba(8, 12, 20, 0.44) 100%)"
+      }
+    }
+  }
+}

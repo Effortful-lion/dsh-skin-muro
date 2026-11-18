@@ -118,6 +118,19 @@ Five decisions worth knowing:
 4. **Every swap gets a new filename** — a same-named file is eaten by the image cache.
 5. **Theme switching is CSS** — a light default rule plus `@media (prefers-color-scheme: dark)`, so both directions are instant; `data-muro-theme` is only written when the shell’s explicit theme disagrees with the system.
 
+## Registry mirrors (npmmirror)
+
+With `registry.npmmirror.com`, a fresh release can fail with `No matching version found for dsh-skin-muro@x.y.z`
+because the mirror index has not synced yet (the tarball usually resolves already: `/dsh-skin-muro/<version>` returns 200
+while `versions` in the index is still stale). Three ways around it:
+
+```sh
+pnpm add dsh-skin-muro --registry=https://registry.npmjs.org   # official registry, just this once
+curl -X PUT "https://registry.npmmirror.com/-/package/dsh-skin-muro/syncs?sync_upstream=true"  # ask the mirror to sync
+# or develop locally against the folder
+pnpm add "link:/absolute/path/to/dsh-skin-muro"
+```
+
 ## Troubleshooting
 
 - **Skin vanished, the plugin shows “not running / cannot resolve profile bundle”** — the plugin folder moved: the profile stores an absolute `link:`. Re-point it with `cd ~/.dsh/profiles/desktop && pnpm add "link:<new path>"`, then toggle the plugin (or restart DSH).

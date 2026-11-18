@@ -117,6 +117,19 @@ cp -R skin ~/.dsh/skins/muro
 4. **每次换图换文件名**：同名文件会被浏览器图片缓存吃掉。
 5. **主题切换交给 CSS 媒体查询**：默认亮色规则 + `@media (prefers-color-scheme: dark)` 覆盖，两个方向都即时；只有外壳显式选了亮/暗（与系统不一致）时才写 `data-muro-theme` 覆盖。
 
+## 国内镜像（npmmirror）
+
+如果 pnpm 走的是 `registry.npmmirror.com`，刚发布的版本可能报 `No matching version found for dsh-skin-muro@x.y.z`：
+镜像的**索引**还没同步（tarball 往往已经能取到，`/dsh-skin-muro/<version>` 返回 200，但 index 里的 versions 仍是旧的）。
+三种绕法：
+
+```sh
+pnpm add dsh-skin-muro --registry=https://registry.npmjs.org   # 这一次走官方源
+curl -X PUT "https://registry.npmmirror.com/-/package/dsh-skin-muro/syncs?sync_upstream=true"  # 触发镜像同步
+# 或者本地开发直接用 link:
+pnpm add "link:/绝对路径/dsh-skin-muro"
+```
+
 ## 排障
 
 - **皮肤突然消失、插件列表显示「未运行 / cannot resolve profile bundle」**：插件目录被移动或改名了。profile 记的是绝对路径，重新指一次即可：`cd ~/.dsh/profiles/desktop && pnpm add "link:<新路径>"`，再在插件页关一下开一下（或重启 DSH）。

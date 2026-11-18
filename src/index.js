@@ -173,7 +173,13 @@ function scopePatches(css) {
 /** The skin stylesheet, re-scoped to this plugin because user-directory skins
  *  are not applied by the skin-center on this build. */
 function scopeSkin(css) {
+  // The token map has to land on <body>, not <html>: the shell declares its own
+  // dark tokens on body[data-ds-dark-theme], and an inherited value can never
+  // beat one set on the element that actually inherits it. Body-level with an
+  // extra attribute wins, which is what makes our palette apply at all.
   return css
+    .replace(/:root,\s*\nbody\[data-ds-dark-theme\] \{/g,
+      'html[data-muro-skin] body,\nhtml[data-muro-skin] body[data-muro-theme="dark"] {')
     .replace(/:root/g, 'html[data-muro-skin]')
     .replace(/\bbody\[data-ds-dark-theme\]/g, 'html[data-muro-skin][data-muro-theme="dark"]')
 }
@@ -664,19 +670,18 @@ export function apply(ctx) {
         const stamp = Date.now().toString(36)
         const appearance = await readAppearance()
         const wallpaper = `html[data-muro-skin]{--muro-panel:.45;--dsw-skin-scrim:var(--muro-panel);--muro-veil:.45;--muro-blur:0px;--muro-bright:1;--muro-sat:1.05;--muro-contrast:1;--muro-gray:0;--muro-pos:center;--muro-scale:1;}
-/* The wallpaper is a body-level layer at z-index 0 and the app is lifted over
-   it: a negative z-index sits behind every opaque ancestor, which is why the
-   middle column kept paintning black over it. */
-html[data-muro-skin] body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+/* The wallpaper sits behind the app (-2) and the shell's own opaque surfaces are
+   cleared by the patches below. Lifting body's children above it broke the
+   shell's fixed overlays, so the wallpaper never takes a positive z-index. */
+html[data-muro-skin] body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
   background-image:url('/muro/asset?theme=light&v=${stamp}');background-position:var(--muro-pos);background-size:cover;background-repeat:no-repeat;
   filter:brightness(var(--muro-bright)) saturate(var(--muro-sat)) contrast(var(--muro-contrast)) grayscale(var(--muro-gray)) blur(var(--muro-blur));
   transform:scale(var(--muro-scale));transform-origin:center;}
 html[data-muro-skin][data-muro-theme="dark"] body::before{background-image:url('/muro/asset?theme=dark&v=${stamp}');}
 html[data-muro-skin],html[data-muro-skin] body{background-color:transparent!important;}
-html[data-muro-skin] body::after{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;
+html[data-muro-skin] body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
   background:linear-gradient(180deg,rgba(250,252,255,calc(var(--muro-veil) * 1.1)),rgba(247,250,255,var(--muro-veil)) 45%,rgba(240,245,252,calc(var(--muro-veil) * 1.15)));}
 html[data-muro-skin][data-muro-theme="dark"] body::after{background:linear-gradient(180deg,rgba(4,6,12,calc(var(--muro-veil) * 1.1)),rgba(4,6,12,var(--muro-veil)) 45%,rgba(4,6,12,calc(var(--muro-veil) * 1.2)));}
-html[data-muro-skin] body>*{position:relative;z-index:2;}
 `
         const body = [scopeSkin(base), scopePatches(patches), appearance.enabled ? wallpaper : ''].join('\n')
         res.writeHead(200, { 'content-type': 'text/css; charset=utf-8', 'cache-control': 'no-store' })

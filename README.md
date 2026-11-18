@@ -109,6 +109,12 @@ cp -R skin ~/.dsh/skins/muro
   cd ~/.dsh/profiles/desktop && pnpm add "link:<新路径>"
   ```
   再在插件管理里关一下开一下（或重启 DSH）。
+- **中栏纯黑 / 皮肤只有侧栏生效**：两个已知原因——
+  1) 壁纸层的 z-index 与中栏的不透明底色：AppFrame 的 .centerCol、ConversationRoot 的 .root 都用
+     --dsw-alias-bg-base 铺底；本插件用 L3 补丁把这两处清成透明。
+  2) token 声明的位置：外壳把暗色 token 声明在 body[data-ds-dark-theme] 上，而继承来的值永远赢不了
+     被继承元素上直接声明的值。所以本插件把整套 token 映射输出到 html[data-muro-skin] body
+     （暗色再加 [data-muro-theme="dark"]）——这是皮肤能否上色的关键。
 - **右侧中栏是黑的、只有侧栏有壁纸**：壁纸层必须是 `z-index:0` 且内容抬到 2，见上文第 2 点；
   若被旧版本缓存，按一次 ⌘R。
 - **皮肤中心里点「Muro 影幕」没反应**：本版 DSH 的用户目录皮肤通道失效，属上游问题；插件不依赖它。

@@ -15,15 +15,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # No registry-url here: setup-node would write an .npmrc holding
+      # _authToken=${NODE_AUTH_TOKEN}, and that placeholder token makes npm skip
+      # OIDC trusted publishing entirely (fails with ENEEDAUTH/E404).
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-          registry-url: 'https://registry.npmjs.org'
 
       - name: npm 11.5.1+ (trusted publishing)
         run: npm install -g npm@latest
 
       - name: Tag 必须等于 package.json 的 version
+        if: startsWith(github.ref, 'refs/tags/')
         run: |
           tag="${GITHUB_REF_NAME#v}"
           version="$(node -p "require('./package.json').version")"

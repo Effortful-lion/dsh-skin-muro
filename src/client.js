@@ -118,18 +118,28 @@ window.__ModuleLoader__.load({
     /** The shell marks dark mode on html or body depending on version; decide
      *  once here and let our own attribute drive the CSS. */
     function readTheme() {
-      // The shell's dark marker moved between versions and is not reliable here;
-      // the text ink it ends up using is. Light ink means a dark theme.
+      const root = document.documentElement
+      const body = document.body
+      // 1) the shell's own markers, wherever this build puts them
+      if (root.hasAttribute('data-ds-dark-theme') || body?.hasAttribute('data-ds-dark-theme') === true) return 'dark'
+      const declared = root.getAttribute('data-theme') ?? body?.getAttribute('data-theme') ?? ''
+      if (declared === 'dark') return 'dark'
+      if (declared === 'light') return 'light'
+      const classes = `${root.className} ${body?.className ?? ''}`
+      if (/\bdark\b/.test(classes) && !/\blight\b/.test(classes)) return 'dark'
+      // 2) "follow the system" is the common case, and this is exactly that signal
+      if (typeof window.matchMedia === 'function' && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark'
+      // 3) last resort: the ink the shell is actually painting with
       try {
-        const ink = getComputedStyle(document.body).color.match(/rgba?\(([^)]+)\)/)
+        const ink = getComputedStyle(body).color.match(/rgba?\(([^)]+)\)/)
         if (ink !== null) {
           const [r, g, b] = ink[1].split(',').map(Number)
           return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255 > 0.5 ? 'dark' : 'light'
         }
       } catch {
-        // fall through to the system preference
+        // ignore and fall through
       }
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+      return 'light'
     }
 
     function syncThemeAttribute() {
@@ -138,6 +148,10 @@ window.__ModuleLoader__.load({
 
     function watchTheme() {
       syncThemeAttribute()
+      if (typeof window.matchMedia === 'function') {
+        const query = window.matchMedia('(prefers-color-scheme: dark)')
+        if (typeof query.addEventListener === 'function') query.addEventListener('change', syncThemeAttribute)
+      }
       const observer = new MutationObserver(syncThemeAttribute)
       observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-ds-dark-theme', 'class'] })
       if (document.body !== null) {
@@ -669,8 +683,9 @@ window.__ModuleLoader__.load({
           const response = await fetch(STATE_URL, { signal: AbortSignal.timeout(10_000) })
           const state = await response.json()
           if (state?.appearance?.enabled !== true) return
-          // Keep the live dials in sync with what is stored: a change made from
-          // another session (or the API) lands within one tick, no reload.
+          // Follow the shell's light/dark switch, then keep the live dials in sync
+          // with what is stored: a change made elsewhere lands within one tick.
+          syncThemeAttribute()
           applyVars(state?.appearance?.settings, state?.wallpapers?.[activeTheme()]?.luma)
           const stamp = Number(state?.styleStamp) || 0
           if (stamp !== lastStamp) {
